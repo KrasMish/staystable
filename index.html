@@ -2,8 +2,14 @@
 <html>
 <head>
     <title>360 Photo Viewer with Crosshair</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
         .instructions {
             position: fixed;
             top: 20px;
@@ -14,6 +20,7 @@
             border-radius: 10px;
             z-index: 999;
             font-family: Arial, sans-serif;
+            font-size: 14px;
         }
         
         .crosshair {
@@ -57,6 +64,7 @@
             border-radius: 10px;
             z-index: 999;
             font-family: Arial, sans-serif;
+            font-size: 14px;
         }
 
         .point-message {
@@ -73,10 +81,38 @@
             text-align: center;
             opacity: 1;
             transition: opacity 0.5s;
+            font-size: 14px;
         }
 
         .point-message.fade {
             opacity: 0;
+        }
+
+        /* Стили для ориентации экрана */
+        .orientation-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            z-index: 1000;
+        }
+
+        @media (max-width: 767px) and (orientation: portrait) {
+            .orientation-message {
+                display: flex;
+            }
+            .a-canvas {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -90,6 +126,10 @@
     <div class="point-counter">Score: 0</div>
     
     <div class="point-message" style="display: none;"></div>
+
+    <div class="orientation-message">
+        Please rotate your device to landscape mode for the best experience.
+    </div>
     
     <a-scene raycaster="objects: .hotspot; far: 20">
         <!-- Camera -->
@@ -243,6 +283,27 @@
                 createHotspot();
             }
         });
+
+        // Handle orientation changes
+        function handleOrientation() {
+            const orientationMessage = document.querySelector('.orientation-message');
+            const canvas = document.querySelector('.a-canvas');
+
+            if (window.innerHeight > window.innerWidth) {
+                orientationMessage.style.display = 'flex';
+                if (canvas) canvas.style.display = 'none';
+            } else {
+                orientationMessage.style.display = 'none';
+                if (canvas) canvas.style.display = 'block';
+            }
+        }
+
+        // Listen for orientation changes
+        window.addEventListener('resize', handleOrientation);
+        window.addEventListener('orientationchange', handleOrientation);
+
+        // Initial orientation check
+        handleOrientation();
     </script>
 </body>
 </html>
