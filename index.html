@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>360 Photo Viewer with Crosshair</title>
+    <title>360 Photo Viewer with VR Support</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
     <style>
@@ -88,7 +88,6 @@
             opacity: 0;
         }
 
-        /* Стили для ориентации экрана */
         .orientation-message {
             display: none;
             position: fixed;
@@ -103,6 +102,21 @@
             text-align: center;
             font-family: Arial, sans-serif;
             font-size: 18px;
+            z-index: 1000;
+        }
+
+        #vr-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
             z-index: 1000;
         }
 
@@ -130,22 +144,26 @@
     <div class="orientation-message">
         Please rotate your device to landscape mode for the best experience.
     </div>
+
+    <button id="vr-mode-toggle">Enable VR Mode</button>
     
     <a-scene raycaster="objects: .hotspot; far: 20">
         <!-- Camera -->
-        <a-camera position="0 1.6 0">
-            <a-entity
-                raycaster="objects: .hotspot; far: 20"
-                position="0 0 -1"
-                geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.02"
-                material="color: white; shader: flat"
-                cursor="fuse: true; fuseTimeout: 500"
-                visible="false">
-            </a-entity>
-        </a-camera>
+        <a-entity id="rig" position="0 1.6 0">
+            <a-camera id="camera">
+                <a-entity
+                    raycaster="objects: .hotspot; far: 20"
+                    position="0 0 -1"
+                    geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.02"
+                    material="color: white; shader: flat"
+                    cursor="fuse: true; fuseTimeout: 500"
+                    visible="false">
+                </a-entity>
+            </a-camera>
+        </a-entity>
 
         <!-- 360 photo sphere -->
-        <a-sky src="/api/placeholder/4096/2048" rotation="0 -90 0"></a-sky>
+        <a-sky id="skybox" src="/api/placeholder/4096/2048" rotation="0 -90 0"></a-sky>
 
         <!-- Initial hotspots -->
         <a-entity id="hotspots"></a-entity>
@@ -163,8 +181,10 @@
         const hotspotsContainer = document.querySelector('#hotspots');
         const pointCounter = document.querySelector('.point-counter');
         const pointMessage = document.querySelector('.point-message');
+        const vrModeToggle = document.getElementById('vr-mode-toggle');
         
         let claimedPoints = 0;
+        let isVRMode = false;
 
         // Update point counter
         function updatePointCounter() {
@@ -289,7 +309,7 @@
             const orientationMessage = document.querySelector('.orientation-message');
             const canvas = document.querySelector('.a-canvas');
 
-            if (window.innerHeight > window.innerWidth) {
+            if (window.innerHeight > window.innerWidth && !isVRMode) {
                 orientationMessage.style.display = 'flex';
                 if (canvas) canvas.style.display = 'none';
             } else {
@@ -304,6 +324,25 @@
 
         // Initial orientation check
         handleOrientation();
+
+        // VR Mode Toggle
+        vrModeToggle.addEventListener('click', function() {
+            isVRMode = !isVRMode;
+            if (isVRMode) {
+                scene.enterVR();
+                this.textContent = 'Disable VR Mode';
+                document.querySelector('#rig').setAttribute('position', '0 0 0');
+                document.querySelector('#camera').setAttribute('stereocam', 'eye:left');
+                document.querySelector('#skybox').setAttribute('stereo', 'eye:both');
+            } else {
+                scene.exitVR();
+                this.textContent = 'Enable VR Mode';
+                document.querySelector('#rig').setAttribute('position', '0 1.6 0');
+                document.querySelector('#camera').removeAttribute('stereocam');
+                document.querySelector('#skybox').removeAttribute('stereo');
+            }
+            handleOrientation();
+        });
     </script>
 </body>
 </html>
