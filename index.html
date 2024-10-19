@@ -78,6 +78,45 @@
         .a-enter-vr {
             display: none !important;
         }
+
+        .point-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 20px;
+            z-index: 999;
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 14px;
+            text-align: center;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 0.5s;
+        }
+
+        .point-message.fade {
+            opacity: 0;
+        }
+
+        .point-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 20px;
+            z-index: 999;
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 14px;
+            text-align: center;
+            white-space: nowrap;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -86,6 +125,10 @@
     </div>
     
     <div class="crosshair"></div>
+    
+    <div class="point-message" style="display: none;"></div>
+    
+    <div class="point-counter">Score: 0</div>
     
     <a-scene 
         raycaster="objects: .hotspot; far: 20"
@@ -124,11 +167,34 @@
         const scene = document.querySelector('a-scene');
         const hotspotsContainer = document.querySelector('#hotspots');
         const instructions = document.querySelector('.instructions');
+        const pointMessage = document.querySelector('.point-message');
+        const pointCounter = document.querySelector('.point-counter');
+        
+        let claimedPoints = 0;
         
         // Hide instructions after delay
         setTimeout(() => {
             instructions.classList.add('fade');
         }, 5000);
+
+        // Show point message
+        function showPointMessage(points) {
+            pointMessage.textContent = `You claimed ${points} points!`;
+            pointMessage.style.display = 'block';
+            pointMessage.classList.remove('fade');
+            
+            setTimeout(() => {
+                pointMessage.classList.add('fade');
+                setTimeout(() => {
+                    pointMessage.style.display = 'none';
+                }, 500);
+            }, 4500);
+        }
+
+        // Update point counter
+        function updatePointCounter() {
+            pointCounter.textContent = `Score: ${claimedPoints}`;
+        }
 
         // Create a hotspot in front view area
         function createHotspot() {
@@ -203,6 +269,15 @@
                     this.parentNode.removeChild(this);
                     // Create new hotspot after delay
                     setTimeout(createHotspot, SPAWN_DELAY);
+                    
+                    // Increment claimed points
+                    claimedPoints++;
+                    updatePointCounter();
+                    
+                    // Check for milestone points
+                    if (claimedPoints % 50 === 0) {
+                        showPointMessage(claimedPoints);
+                    }
                 }, 300);
             });
             
