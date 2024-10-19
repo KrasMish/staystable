@@ -46,6 +46,38 @@
             top: 50%;
             transform: translateY(-50%);
         }
+
+        .point-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 999;
+            font-family: Arial, sans-serif;
+        }
+
+        .point-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 999;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            opacity: 1;
+            transition: opacity 0.5s;
+        }
+
+        .point-message.fade {
+            opacity: 0;
+        }
     </style>
 </head>
 <body>
@@ -54,6 +86,10 @@
     </div>
     
     <div class="crosshair"></div>
+    
+    <div class="point-counter">Score: 0</div>
+    
+    <div class="point-message" style="display: none;"></div>
     
     <a-scene raycaster="objects: .hotspot; far: 20">
         <!-- Camera -->
@@ -85,6 +121,29 @@
         // Initialize scene
         const scene = document.querySelector('a-scene');
         const hotspotsContainer = document.querySelector('#hotspots');
+        const pointCounter = document.querySelector('.point-counter');
+        const pointMessage = document.querySelector('.point-message');
+        
+        let claimedPoints = 0;
+
+        // Update point counter
+        function updatePointCounter() {
+            pointCounter.textContent = `Score: ${claimedPoints}`;
+        }
+
+        // Show point message
+        function showPointMessage(points) {
+            pointMessage.textContent = `You claimed ${points} points!`;
+            pointMessage.style.display = 'block';
+            pointMessage.classList.remove('fade');
+            
+            setTimeout(() => {
+                pointMessage.classList.add('fade');
+                setTimeout(() => {
+                    pointMessage.style.display = 'none';
+                }, 500);
+            }, 4500);
+        }
         
         // Create a hotspot in front view area
         function createHotspot() {
@@ -163,6 +222,15 @@
                     this.parentNode.removeChild(this);
                     // Create new hotspot after delay
                     setTimeout(createHotspot, SPAWN_DELAY);
+
+                    // Increment claimed points
+                    claimedPoints++;
+                    updatePointCounter();
+                    
+                    // Check for milestone points
+                    if (claimedPoints % 50 === 0) {
+                        showPointMessage(claimedPoints);
+                    }
                 }, 300);
             });
             
