@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Stereoscopic 360 Photo Viewer with Crosshair</title>
+    <title>Stereoscopic 360 Photo Viewer with Synchronized Movement</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
     <style>
         body {
@@ -95,40 +95,44 @@
 </head>
 <body>
     <div class="instructions">
-        Center the cross on a dot for 2 seconds to make it disappear
+        Look at a sphere for 2 seconds to make it disappear
     </div>
     
     <div id="left-screen" class="screen">
-        <div class="crosshair" style="left: calc(50% - 1%)"></div>
+        <div class="crosshair" style="left: 50%"></div>
         <a-scene embedded>
-            <a-camera position="0 1.6 0">
-                <a-entity
-                    raycaster="objects: .hotspot-left; far: 20"
-                    position="0 0 -1"
-                    geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.02"
-                    material="color: white; shader: flat"
-                    cursor="fuse: true; fuseTimeout: 500"
-                    visible="false">
-                </a-entity>
-            </a-camera>
+            <a-entity id="rig-left">
+                <a-camera id="camera-left" position="0 1.6 0">
+                    <a-entity
+                        raycaster="objects: .hotspot-left; far: 20"
+                        position="0 0 -1"
+                        geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.02"
+                        material="color: white; shader: flat"
+                        cursor="fuse: true; fuseTimeout: 2000"
+                        visible="false">
+                    </a-entity>
+                </a-camera>
+            </a-entity>
             <a-sky src="/api/placeholder/4096/2048" rotation="0 -90 0"></a-sky>
             <a-entity id="hotspots-left"></a-entity>
         </a-scene>
     </div>
     
     <div id="right-screen" class="screen">
-        <div class="crosshair" style="left: calc(50% + 1%)"></div>
+        <div class="crosshair" style="left: 50%"></div>
         <a-scene embedded>
-            <a-camera position="0 1.6 0">
-                <a-entity
-                    raycaster="objects: .hotspot-right; far: 20"
-                    position="0 0 -1"
-                    geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.02"
-                    material="color: white; shader: flat"
-                    cursor="fuse: true; fuseTimeout: 500"
-                    visible="false">
-                </a-entity>
-            </a-camera>
+            <a-entity id="rig-right">
+                <a-camera id="camera-right" position="0 1.6 0">
+                    <a-entity
+                        raycaster="objects: .hotspot-right; far: 20"
+                        position="0 0 -1"
+                        geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.02"
+                        material="color: white; shader: flat"
+                        cursor="fuse: true; fuseTimeout: 2000"
+                        visible="false">
+                    </a-entity>
+                </a-camera>
+            </a-entity>
             <a-sky src="/api/placeholder/4096/2048" rotation="0 -90 0"></a-sky>
             <a-entity id="hotspots-right"></a-entity>
         </a-scene>
@@ -144,17 +148,29 @@
         const SPAWN_DELAY = 3000;
         const MIN_DISTANCE = 3;
         const MAX_DISTANCE = 6;
-        const EYE_SEPARATION = 0.05;  // Adjust this value to change the stereoscopic effect
+        const EYE_SEPARATION = 0.065;  // Typical human eye separation in meters
         
-        // Initialize scenes
+        // Initialize scenes and cameras
         const leftScene = document.querySelector('#left-screen a-scene');
         const rightScene = document.querySelector('#right-screen a-scene');
+        const leftCamera = document.querySelector('#camera-left');
+        const rightCamera = document.querySelector('#camera-right');
         const leftHotspotsContainer = document.querySelector('#hotspots-left');
         const rightHotspotsContainer = document.querySelector('#hotspots-right');
         const pointCounter = document.querySelector('.point-counter');
         const pointMessage = document.querySelector('.point-message');
         
         let claimedPoints = 0;
+
+        // Synchronize camera movements
+        function syncCameras() {
+            const leftRotation = leftCamera.getAttribute('rotation');
+            const rightRotation = rightCamera.getAttribute('rotation');
+            
+            if (leftRotation.x !== rightRotation.x || leftRotation.y !== rightRotation.y || leftRotation.z !== rightRotation.z) {
+                rightCamera.setAttribute('rotation', leftRotation);
+            }
+        }
 
         // Update point counter
         function updatePointCounter() {
@@ -181,8 +197,8 @@
             const y = (Math.random() * 3) - 1;
             const z = -(Math.random() * (MAX_DISTANCE - MIN_DISTANCE) + MIN_DISTANCE);
             
-            createHotspot(leftHotspotsContainer, x - EYE_SEPARATION, y, z, 'left');
-            createHotspot(rightHotspotsContainer, x + EYE_SEPARATION, y, z, 'right');
+            createHotspot(leftHotspotsContainer, x - EYE_SEPARATION / 2, y, z, 'left');
+            createHotspot(rightHotspotsContainer, x + EYE_SEPARATION / 2, y, z, 'right');
         }
         
         // Create a single hotspot
@@ -202,45 +218,7 @@
             });
             hotspot.setAttribute('class', `hotspot-${side}`);
             
-            // Progress ring for visual feedback
-            const ring = document.createElement('a-entity');
-            ring.setAttribute('geometry', {
-                primitive: 'ring',
-                radiusInner: 0.2,
-                radiusOuter: 0.25
-            });
-            ring.setAttribute('material', {
-                color: '#FFFFFF',
-                opacity: 0.8,
-                side: 'double'
-            });
-            ring.setAttribute('rotation', '0 0 0');
-            ring.setAttribute('visible', false);
-            hotspot.appendChild(ring);
-            
             // Add interaction
-            hotspot.addEventListener('fusing', function() {
-                ring.setAttribute('visible', true);
-                ring.setAttribute('animation', {
-                    property: 'geometry.thetaLength',
-                    dur: 2000,
-                    from: 0,
-                    to: 360,
-                    easing: 'linear'
-                });
-            });
-            
-            hotspot.addEventListener('mouseleave', function() {
-                ring.setAttribute('visible', false);
-                ring.removeAttribute('animation');
-                ring.setAttribute('geometry', {
-                    primitive: 'ring',
-                    radiusInner: 0.2,
-                    radiusOuter: 0.25,
-                    thetaLength: 0
-                });
-            });
-            
             hotspot.addEventListener('click', function() {
                 // Disappear animation
                 this.setAttribute('animation', {
@@ -267,7 +245,7 @@
                     updatePointCounter();
                     
                     // Check for milestone points
-                    if (claimedPoints % 50 === 0) {
+                    if (claimedPoints % 10 === 0) {
                         showPointMessage(claimedPoints);
                     }
                 }, 300);
@@ -282,6 +260,13 @@
                 createHotspotPair();
             }
         });
+
+        // Sync cameras on every frame
+        function animate() {
+            syncCameras();
+            requestAnimationFrame(animate);
+        }
+        animate();
     </script>
 </body>
 </html>
