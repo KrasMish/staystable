@@ -106,7 +106,7 @@
     </div>
 
     <div class="instructions">
-        Center the cross on a dot for 2 seconds to make it disappear
+        Center the cross on a dot for a second to make it disappear
     </div>
     
     <div class="crosshair"></div>
@@ -123,7 +123,7 @@
                 position="0 0 -1"
                 geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.02"
                 material="color: white; shader: flat"
-                cursor="fuse: true; fuseTimeout: 500"
+                cursor="fuse: true; fuseTimeout: 1000"
                 visible="false">
             </a-entity>
         </a-camera>
@@ -243,7 +243,7 @@
                 // Disappear animation
                 this.setAttribute('animation', {
                     property: 'scale',
-                    dur: 300,
+                    dur: 500,
                     to: '0 0 0',
                     easing: 'easeInOutQuad'
                 });
