@@ -179,11 +179,17 @@
             const y = (Math.random() * 3) - 1;
             const z = -(Math.random() * (MAX_DISTANCE - MIN_DISTANCE) + MIN_DISTANCE);
             
+            // Determine if it's a mobile device
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            // Set hotspot size (1.5 times larger for mobile)
+            const radius = isMobile ? 0.225 : 0.15;
+            
             // Set hotspot properties
             hotspot.setAttribute('position', `${x} ${y} ${z}`);
             hotspot.setAttribute('geometry', {
                 primitive: 'sphere',
-                radius: 0.15
+                radius: radius
             });
             hotspot.setAttribute('material', {
                 color: '#FF4444',
@@ -196,8 +202,8 @@
             const ring = document.createElement('a-entity');
             ring.setAttribute('geometry', {
                 primitive: 'ring',
-                radiusInner: 0.2,
-                radiusOuter: 0.25
+                radiusInner: radius * 1.33, // Adjusted for the new size
+                radiusOuter: radius * 1.67  // Adjusted for the new size
             });
             ring.setAttribute('material', {
                 color: '#FFFFFF',
@@ -227,8 +233,8 @@
                 ring.removeAttribute('animation');
                 ring.setAttribute('geometry', {
                     primitive: 'ring',
-                    radiusInner: 0.2,
-                    radiusOuter: 0.25,
+                    radiusInner: radius * 1.33,
+                    radiusOuter: radius * 1.67,
                     thetaLength: 0
                 });
             });
