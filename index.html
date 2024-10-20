@@ -3,6 +3,7 @@
 <head>
     <title>360 Photo Viewer with Crosshair</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         .instructions {
             position: fixed;
@@ -38,7 +39,7 @@
             height: 20px;
             left: 50%;
             top: 50%;
-            transform: translate(-50%, -50%) rotate(0deg); /* Центрируем вертикальный элемент */
+            transform: translate(-50%, -50%) rotate(0deg);
         }
         
         .crosshair::after {
@@ -46,7 +47,7 @@
             height: 2px;
             left: 50%;
             top: 50%;
-            transform: translate(-50%, -50%) rotate(0deg); /* Центрируем горизонтальный элемент */
+            transform: translate(-50%, -50%) rotate(0deg);
         }
 
         .point-counter {
@@ -80,9 +81,30 @@
         .point-message.fade {
             opacity: 0;
         }
+
+        #orientation-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            text-align: center;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
+    <div id="orientation-message" style="display: none;">
+        Пожалуйста, переверните устройство в горизонтальный режим
+    </div>
+
     <div class="instructions">
         Center the cross on a dot for 2 seconds to make it disappear
     </div>
@@ -125,6 +147,7 @@
         const hotspotsContainer = document.querySelector('#hotspots');
         const pointCounter = document.querySelector('.point-counter');
         const pointMessage = document.querySelector('.point-message');
+        const orientationMessage = document.getElementById('orientation-message');
         
         let claimedPoints = 0;
 
@@ -239,8 +262,24 @@
             hotspotsContainer.appendChild(hotspot);
         }
         
-        // Initialize hotspots
+        // Check device orientation
+        function checkOrientation() {
+            if (window.innerHeight > window.innerWidth) {
+                orientationMessage.style.display = 'flex';
+                scene.pause();
+            } else {
+                orientationMessage.style.display = 'none';
+                scene.play();
+            }
+        }
+
+        // Listen for orientation changes
+        window.addEventListener('resize', checkOrientation);
+        window.addEventListener('orientationchange', checkOrientation);
+
+        // Initialize
         scene.addEventListener('loaded', () => {
+            checkOrientation();
             for (let i = 0; i < NUM_HOTSPOTS; i++) {
                 createHotspot();
             }
