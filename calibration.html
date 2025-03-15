@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StayStable - Главная</title>
+    <title>StayStable - Калибровка</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +16,7 @@
             height: 100vh;
         }
 
-        .menu {
+        .calibration-container {
             text-align: center;
             background: white;
             padding: 40px;
@@ -24,13 +24,13 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .menu h1 {
-            font-size: 2.5rem;
+        .calibration-container h1 {
+            font-size: 2rem;
             color: #333;
             margin-bottom: 20px;
         }
 
-        .menu-button {
+        .calibration-button {
             display: block;
             width: 200px;
             padding: 15px;
@@ -44,25 +44,22 @@
             transition: background-color 0.3s ease;
         }
 
-        .menu-button:hover {
+        .calibration-button:hover {
             background-color: #0056b3;
-        }
-
-        .menu-button.secondary {
-            background-color: #6c757d;
-        }
-
-        .menu-button.secondary:hover {
-            background-color: #5a6268;
         }
     </style>
 </head>
 <body>
-    <div class="menu">
-        <h1>StayStable</h1>
-        <button class="menu-button" onclick="window.location.href='project.html'">Проект</button>
-        <button class="menu-button secondary" onclick="window.location.href='calibration.html'">Калибровка</button>
-        <button class="menu-button secondary" onclick="window.location.href='about.html'">О проекте</button>
+    <div class="calibration-container">
+        <h1>Калибровка</h1>
+        <button class="calibration-button" onclick="startCalibration()">Начать калибровку</button>
     </div>
+
+    <script>
+        function startCalibration() {
+            alert("Калибровка начата. Следуйте инструкциям на экране.");
+            // Здесь можно добавить логику для калибровки
+        }
+    </script>
 </body>
 </html>
