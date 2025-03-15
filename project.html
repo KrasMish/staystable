@@ -6,7 +6,6 @@
     <title>StayStable - Проект</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
     <style>
-        /* Previous styles remain unchanged */
         body {
             margin: 0;
             overflow: hidden;
@@ -103,20 +102,6 @@
             z-index: 1000;
         }
 
-        /* Рамка поля зрения */
-        .field-of-view {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 120vw;
-            height: 90vh;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 998;
-        }
-
         .out-of-bounds-message {
             position: fixed;
             top: 50%;
@@ -134,7 +119,6 @@
     </style>
 </head>
 <body>
-    <!-- Previous HTML structure remains unchanged -->
     <div id="orientation-message" style="display: none;">
         Пожалуйста, переверните устройство в горизонтальный режим
     </div>
@@ -144,8 +128,6 @@
     </div>
 
     <div class="crosshair"></div>
-
-    <div class="field-of-view"></div>
 
     <div class="out-of-bounds-message">Верните голову в исходное положение</div>
 
@@ -193,7 +175,6 @@
         let claimedPoints = 0;
         let isOutOfBounds = false;
 
-        // Previous functions remain unchanged
         function checkBounds() {
             const camera = document.querySelector('a-camera');
             const rotation = camera.getAttribute('rotation');
