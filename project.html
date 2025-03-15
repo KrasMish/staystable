@@ -108,27 +108,12 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 90vw; /* Увеличено в 1.5 раза */
-            height: 67.5vh; /* Увеличено в 1.5 раза */
+            width: 80vw; /* Ширина рамки */
+            height: 60vh; /* Высота рамки */
             border: 2px solid rgba(255, 255, 255, 0.5);
             border-radius: 50%;
             pointer-events: none;
             z-index: 998;
-        }
-
-        /* Сообщение о выходе за рамку */
-        .out-of-bounds-message {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            font-size: 1.5rem;
-            z-index: 1001;
-            display: none;
         }
     </style>
 </head>
@@ -148,8 +133,6 @@
     <div class="point-counter">Score: 0</div>
 
     <div class="point-message" style="display: none;"></div>
-
-    <div class="out-of-bounds-message">Верните голову в исходное положение</div>
 
     <a-scene raycaster="objects: .hotspot; far: 20">
         <!-- Camera -->
@@ -184,7 +167,6 @@
         const pointCounter = document.querySelector('.point-counter');
         const pointMessage = document.querySelector('.point-message');
         const orientationMessage = document.getElementById('orientation-message');
-        const outOfBoundsMessage = document.querySelector('.out-of-bounds-message');
 
         let claimedPoints = 0;
 
@@ -229,8 +211,8 @@
                 radius: radius
             });
             hotspot.setAttribute('material', {
-                shader: 'flat',
                 color: '#9ACBAF', // Основной цвет
+                shader: 'flat',
                 emissive: '#678574', // Градиентный цвет
                 emissiveIntensity: 0.8
             });
@@ -317,39 +299,9 @@
             }
         }
 
-        // Проверка выхода за рамку поля зрения
-        function checkOutOfBounds() {
-            const camera = document.querySelector('a-camera');
-            const cameraRotation = camera.getAttribute('rotation');
-
-            // Углы поворота камеры
-            const yaw = cameraRotation.y; // Поворот по горизонтали
-            const pitch = cameraRotation.x; // Поворот по вертикали
-
-            // Границы рамки (в градусах)
-            const yawLimit = 45; // Граница по горизонтали
-            const pitchLimit = 30; // Граница по вертикали
-
-            // Проверка выхода за рамку
-            if (
-                Math.abs(yaw) > yawLimit ||
-                Math.abs(pitch) > pitchLimit
-            ) {
-                outOfBoundsMessage.style.display = 'block';
-                if (navigator.vibrate) {
-                    navigator.vibrate(200); // Вибрация на 200 мс
-                }
-            } else {
-                outOfBoundsMessage.style.display = 'none';
-            }
-        }
-
         // Listen for orientation changes
         window.addEventListener('resize', checkOrientation);
         window.addEventListener('orientationchange', checkOrientation);
-
-        // Проверка выхода за рамку каждые 100 мс
-        setInterval(checkOutOfBounds, 100);
 
         // Initialize
         scene.addEventListener('loaded', () => {
