@@ -195,12 +195,11 @@
                 radius: radius
             });
             hotspot.setAttribute('material', {
-                color: '#4CAF50', // Неяркий зеленый цвет
-                emissive: '#4CAF50', // Можно оставить тот же цвет или выбрать другой для свечения
-                emissiveIntensity: 0.5
+                color: '#4CAF50', // Основной цвет: неяркий зеленый
+                emissive: '#00FF00', // Цвет свечения: яркий зеленый
+                emissiveIntensity: 0.5 // Интенсивность свечения
             });
-            hotspot.setAttribute('class', 'hotspot');
-            // Progress ring for visual feedback
+            hotspot.setAttribute('class', 'hotspot');            // Progress ring for visual feedback
             const ring = document.createElement('a-entity');
             ring.setAttribute('geometry', {
                 primitive: 'ring',
