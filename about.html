@@ -1,68 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StayStable - Главная</title>
+    <title>StayStable - Про проект</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background-color: #1a1a1a;
+            color: #ffffff;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            line-height: 1.6;
         }
 
-        .menu {
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h1, h2 {
+            color: #9ACBAF;
             text-align: center;
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .menu h1 {
+        h1 {
             font-size: 2.5rem;
-            color: #333;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
         }
 
-        .menu-button {
-            display: block;
-            width: 200px;
-            padding: 15px;
-            margin: 10px auto;
-            font-size: 1.2rem;
-            color: white;
-            background-color: #007bff;
-            border: none;
+        h2 {
+            font-size: 2rem;
+            margin-top: 40px;
+        }
+
+        .section {
+            background-color: #2a2a2a;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .feature-list li:before {
+            content: "•";
+            color: #9ACBAF;
+            font-size: 1.5em;
+            position: absolute;
+            left: 0;
+            top: -3px;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #9ACBAF;
+            color: #1a1a1a;
+            text-decoration: none;
             border-radius: 25px;
-            cursor: pointer;
+            margin-top: 20px;
             transition: background-color 0.3s ease;
         }
 
-        .menu-button:hover {
-            background-color: #0056b3;
+        .back-button:hover {
+            background-color: #678574;
         }
 
-        .menu-button.secondary {
-            background-color: #6c757d;
-        }
-
-        .menu-button.secondary:hover {
-            background-color: #5a6268;
+        .highlight {
+            color: #9ACBAF;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="menu">
-        <h1>StayStable</h1>
-        <button class="menu-button" onclick="window.location.href='project.html'">Staystable trainer</button>
-        <button class="menu-button secondary" onclick="window.location.href='calibration.html'">calibration</button>
-        <button class="menu-button secondary" onclick="window.location.href='about.html'">About project</button>
+    <div class="container">
+        <h1>Про StayStable</h1>
+
+        <div class="section">
+            <h2>Що таке StayStable?</h2>
+            <p>StayStable - це інноваційна система тренувань на основі VR, розроблена для покращення балансу та координації за допомогою інтерактивних вправ та зворотного зв'язку в реальному часі.</p>
+        </div>
+
+        <div class="section">
+            <h2>Основні функції</h2>
+            <ul class="feature-list">
+                <li>Інтерактивне VR-середовище для тренування балансу</li>
+                <li>Відстеження положення голови в реальному часі</li>
+                <li>Налаштовувані рівні складності</li>
+                <li>Система підрахунку балів</li>
+                <li>Інструменти калібрування для оптимальної роботи</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Як користуватися</h2>
+            <ol class="feature-list">
+                <li>Почніть з <span class="highlight">Калібрування</span> для налаштування початкового положення</li>
+                <li>Увійдіть у тренувальне середовище через <span class="highlight">StayStable тренер</span></li>
+                <li>Тримайте голову стійко та фокусуйтесь на точках, що з'являються</li>
+                <li>Дивіться на точки, щоб збирати їх</li>
+                <li>Намагайтеся утримувати баланс під час досягання точок</li>
+                <li>Слідкуйте за інструкціями на екрані для оптимального позиціонування</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Поради для найкращих результатів</h2>
+            <ul class="feature-list">
+                <li>Переконайтеся, що навколо вас достатньо простору</li>
+                <li>Починайте з коротких сесій і поступово збільшуйте тривалість</li>
+                <li>Робіть перерви, якщо відчуваєте дискомфорт</li>
+                <li>Зберігайте плавність і контроль рухів</li>
+                <li>Звертайте увагу на індикатори положення</li>
+            </ul>
+        </div>
+
+        <center>
+            <a href="index.html" class="back-button">Повернутися до головного меню</a>
+        </center>
     </div>
 </body>
 </html>
+
