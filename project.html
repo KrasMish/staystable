@@ -101,6 +101,20 @@
             text-align: center;
             z-index: 1000;
         }
+
+        /* Рамка поля зрения */
+        .field-of-view {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60vw;
+            height: 40vh;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 998;
+        }
     </style>
 </head>
 <body>
@@ -113,6 +127,8 @@
     </div>
 
     <div class="crosshair"></div>
+
+    <div class="field-of-view"></div> <!-- Рамка поля зрения -->
 
     <div class="point-counter">Score: 0</div>
 
@@ -140,8 +156,8 @@
 
     <script>
         // Configuration
-        const NUM_HOTSPOTS = 10; // Увеличим количество точек
-        const SPAWN_DELAY = 2000; // Уменьшим задержку
+        const NUM_HOTSPOTS = 10;
+        const SPAWN_DELAY = 2000;
         const MIN_DISTANCE = 3;
         const MAX_DISTANCE = 6;
 
@@ -161,7 +177,7 @@
 
         // Show point message
         function showPointMessage(points) {
-            pointMessage.textContent = `You claimed ${points} points!`;
+            pointMessage.textContent = `Внимание, вы набрали ${points} баллов!`;
             pointMessage.style.display = 'block';
             pointMessage.classList.remove('fade');
 
@@ -170,7 +186,7 @@
                 setTimeout(() => {
                     pointMessage.style.display = 'none';
                 }, 500);
-            }, 4500);
+            }, 3000); // Сообщение исчезнет через 3 секунды
         }
 
         // Create a hotspot in front view area
@@ -195,11 +211,13 @@
                 radius: radius
             });
             hotspot.setAttribute('material', {
-                color: '#4CAF50', // Основной цвет: неяркий зеленый
-                emissive: '#00FF00', // Цвет свечения: яркий зеленый
-                emissiveIntensity: 0.5 // Интенсивность свечения
+                color: '#FF4444',
+                emissive: '#ff0000',
+                emissiveIntensity: 0.5
             });
-            hotspot.setAttribute('class', 'hotspot');            // Progress ring for visual feedback
+            hotspot.setAttribute('class', 'hotspot');
+
+            // Progress ring for visual feedback
             const ring = document.createElement('a-entity');
             ring.setAttribute('geometry', {
                 primitive: 'ring',
@@ -259,8 +277,8 @@
                     claimedPoints++;
                     updatePointCounter();
 
-                    // Check for milestone points
-                    if (claimedPoints % 50 === 0) {
+                    // Check for milestone points (кратные 25)
+                    if (claimedPoints % 25 === 0) {
                         showPointMessage(claimedPoints);
                     }
                 }, 300);
