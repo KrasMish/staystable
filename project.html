@@ -320,17 +320,20 @@
         // Проверка выхода за рамку поля зрения
         function checkOutOfBounds() {
             const camera = document.querySelector('a-camera');
-            const cameraPosition = camera.getAttribute('position');
-            const fieldOfView = document.querySelector('.field-of-view');
+            const cameraRotation = camera.getAttribute('rotation');
 
-            // Получаем границы рамки
-            const fieldWidth = fieldOfView.offsetWidth;
-            const fieldHeight = fieldOfView.offsetHeight;
+            // Углы поворота камеры
+            const yaw = cameraRotation.y; // Поворот по горизонтали
+            const pitch = cameraRotation.x; // Поворот по вертикали
 
-            // Проверяем, находится ли камера за пределами рамки
+            // Границы рамки (в градусах)
+            const yawLimit = 45; // Граница по горизонтали
+            const pitchLimit = 30; // Граница по вертикали
+
+            // Проверка выхода за рамку
             if (
-                Math.abs(cameraPosition.x) > fieldWidth / 2 ||
-                Math.abs(cameraPosition.y) > fieldHeight / 2
+                Math.abs(yaw) > yawLimit ||
+                Math.abs(pitch) > pitchLimit
             ) {
                 outOfBoundsMessage.style.display = 'block';
                 if (navigator.vibrate) {
