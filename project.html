@@ -228,8 +228,9 @@
             const hotspot = document.createElement('a-entity');
 
             // Випадкова позиція в межах поля зору
-            const x = (Math.random() * 4) - 2;
-            const y = (Math.random() * 3) - 1;
+            // Зменшуємо діапазон для кращого контролю
+            const x = (Math.random() * 2) - 1; // від -1 до 1
+            const y = (Math.random() * 1.5) - 0.75; // від -0.75 до 0.75
             const z = -(Math.random() * (MAX_DISTANCE - MIN_DISTANCE) + MIN_DISTANCE);
 
             // Визначення типу пристрою
@@ -273,52 +274,64 @@
 
             // Початок наведення на точку
             hotspot.addEventListener('fusing', function() {
-                ring.setAttribute('visible', true);
-                ring.setAttribute('animation', {
-                    property: 'geometry.thetaLength',
-                    dur: 2000,
-                    from: 0,
-                    to: 360,
-                    easing: 'linear'
-                });
+                try {
+                    ring.setAttribute('visible', true);
+                    ring.setAttribute('animation', {
+                        property: 'geometry.thetaLength',
+                        dur: 2000,
+                        from: 0,
+                        to: 360,
+                        easing: 'linear'
+                    });
+                } catch (error) {
+                    console.log('Помилка при наведенні на точку:', error);
+                }
             });
 
             // Відведення прицілу від точки
             hotspot.addEventListener('mouseleave', function() {
-                ring.setAttribute('visible', false);
-                ring.removeAttribute('animation');
-                ring.setAttribute('geometry', {
-                    primitive: 'ring',
-                    radiusInner: radius * 1.33,
-                    radiusOuter: radius * 1.67,
-                    thetaLength: 0
-                });
+                try {
+                    ring.setAttribute('visible', false);
+                    ring.removeAttribute('animation');
+                    ring.setAttribute('geometry', {
+                        primitive: 'ring',
+                        radiusInner: radius * 1.33,
+                        radiusOuter: radius * 1.67,
+                        thetaLength: 0
+                    });
+                } catch (error) {
+                    console.log('Помилка при відведенні від точки:', error);
+                }
             });
 
             // Успішне наведення на точку
             hotspot.addEventListener('click', function() {
-                // Анімація зникнення
-                this.setAttribute('animation', {
-                    property: 'scale',
-                    dur: 500,
-                    to: '0 0 0',
-                    easing: 'easeInOutQuad'
-                });
+                try {
+                    // Анімація зникнення
+                    this.setAttribute('animation', {
+                        property: 'scale',
+                        dur: 500,
+                        to: '0 0 0',
+                        easing: 'easeInOutQuad'
+                    });
 
-                // Видалення точки та створення нової
-                setTimeout(() => {
-                    this.parentNode.removeChild(this);
-                    setTimeout(createHotspot, SPAWN_DELAY);
+                    // Видалення точки та створення нової
+                    setTimeout(() => {
+                        this.parentNode.removeChild(this);
+                        setTimeout(createHotspot, SPAWN_DELAY);
 
-                    // Збільшення кількості очків
-                    claimedPoints++;
-                    updatePointCounter();
+                        // Збільшення кількості очків
+                        claimedPoints++;
+                        updatePointCounter();
 
-                    // Перевірка досягнення кратності 25
-                    if (claimedPoints % 25 === 0) {
-                        showPointMessage(claimedPoints);
-                    }
-                }, 300);
+                        // Перевірка досягнення кратності 25
+                        if (claimedPoints % 25 === 0) {
+                            showPointMessage(claimedPoints);
+                        }
+                    }, 300);
+                } catch (error) {
+                    console.log('Помилка при виборі точки:', error);
+                }
             });
 
             hotspotsContainer.appendChild(hotspot);
