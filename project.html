@@ -203,7 +203,6 @@
         const outOfBoundsMessage = document.querySelector('.out-of-bounds-message');
 
         let claimedPoints = 0; // Лічильник набраних очків
-        let vibrationEnabled = false;
 
         // Оновлення відображення кількості очків
         function updatePointCounter() {
@@ -336,24 +335,6 @@
             }
         }
 
-        // Функція для ініціалізації вібрації
-        function initializeVibration() {
-            if (navigator.vibrate) {
-                // Пробуємо викликати вібрацію після взаємодії користувача
-                navigator.vibrate(50).then(() => {
-                    vibrationEnabled = true;
-                }).catch(() => {
-                    console.log('Вібрація не підтримується або вимкнена');
-                });
-            }
-        }
-
-        // Додаємо обробник для першої взаємодії користувача
-        document.addEventListener('click', function initVibration() {
-            initializeVibration();
-            document.removeEventListener('click', initVibration);
-        }, { once: true });
-
         // Перевірка виходу за межі поля зору
         function checkOutOfBounds() {
             const camera = document.querySelector('a-camera');
@@ -370,7 +351,7 @@
                 Math.abs(pitch) > pitchLimit
             ) {
                 outOfBoundsMessage.style.display = 'block';
-                if (vibrationEnabled && navigator.vibrate) {
+                if (navigator.vibrate) {
                     navigator.vibrate(200);
                 }
             } else {
